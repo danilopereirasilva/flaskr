@@ -4,6 +4,7 @@ import click
 from flask import current_app, g
 
 
+# creates connection with db
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
@@ -15,6 +16,7 @@ def get_db():
     return g.db
 
 
+# close db connection
 def close_db(e=None):
     db = g.pop('db', None)
 
@@ -22,6 +24,7 @@ def close_db(e=None):
         db.close()
 
 
+# initiate a db instance
 def init_db():
     db = get_db()
 

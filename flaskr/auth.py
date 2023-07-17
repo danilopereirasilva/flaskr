@@ -25,9 +25,10 @@ def register():
 
         if error is None:
             try:
-                db.execute('INSERT INTO user (username, password), VALUES (?, ?)',
-                           (username, generate_password_hash(password)),
-                           )
+                db.execute(
+                    "INSERT INTO user (username, password) VALUES (?, ?)",
+                    (username, generate_password_hash(password)),
+                )
                 db.commit()
             except db.IntegrityError:
                 error = f"User {username} is already registered."
@@ -47,7 +48,7 @@ def login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
+            "SELECT * FROM user WHERE username = ?", (username,)
         ).fetchone()
 
         if user is None:
@@ -58,7 +59,10 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-        return redirect(url_for('index'))
+
+        flash(error)
+
+    return redirect(url_for('index'))
 
 
 @bp.before_app_request
@@ -69,7 +73,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            "SELECT * FROM user WHERE id = ?", (user_id,)
         ).fetchone()
 
 
