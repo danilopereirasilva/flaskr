@@ -48,7 +48,7 @@ def login():
         db = get_db()
         error = None
         user = db.execute(
-            "SELECT * FROM user WHERE username = ?", (username,)
+            'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -59,10 +59,11 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+            return redirect(url_for('index'))
 
         flash(error)
 
-    return redirect(url_for('index'))
+    return render_template('auth/login.html')
 
 
 @bp.before_app_request
@@ -83,11 +84,13 @@ def logout():
     return redirect(url_for('index'))
 
 
+# builds a decorator for login_required
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
 
-        return wrapped_view(**kwargs)
+        return view(**kwargs)
+
     return wrapped_view
