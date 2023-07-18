@@ -8,7 +8,7 @@ def test_index(client, auth):
     assert b"Register" in response.data
 
     auth.login()
-    client.get('/')
+    response = client.get('/')
     assert b'Log Out' in response.data
     assert b'test title' in response.data
     assert b'by test on 2018-01-01' in response.data
@@ -67,9 +67,10 @@ def test_update(client, auth, app):
     assert client.get('/1/update').status_code == 200
     client.post('/1/update', data={'title': 'updated', 'body': ''})
 
-    db = get_db()
-    post = db.execute("SELECT * FROM post WHERE id = 1").fetchone()
-    assert post['title'] == 'updated'
+    with app.app_context():
+        db = get_db()
+        post = db.execute("SELECT * FROM post WHERE id = 1").fetchone()
+        assert post['title'] == 'updated'
 
 
 @pytest.mark.parametrize('path', (
@@ -87,7 +88,7 @@ def test_delete(client, auth, app):
     response = client.post('/1/delete')
     assert response.headers["Location"] == '/'
 
-    with app.app_contexte():
+    with app.app_context():
         db = get_db()
         post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
         assert post is None
