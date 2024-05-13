@@ -1,3 +1,6 @@
+# the pyproject.toml file is used make __init__.py the core runnable
+# application and use the project in packages pattern
+
 [project]
 name = "flaskr"
 version = "1.0.0"

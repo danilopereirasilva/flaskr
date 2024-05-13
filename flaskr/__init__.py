@@ -5,7 +5,7 @@ from flask import Flask
 
 #  create_app is the application factory function
 def create_app(test_config=None):
-    # create e configure the app
+    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     # sets some default configuration that the app will use
     app.config.from_mapping(
